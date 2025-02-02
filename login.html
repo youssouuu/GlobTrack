@@ -60,13 +60,18 @@
         .toggle-link:hover {
             text-decoration: underline;
         }
+
+        /* To hide the forms */
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container" id="form-container">
     <!-- Connexion Form -->
-    <div id="login-form">
+    <div id="login-form" class="form-section">
         <h2 class="form-header">Se connecter</h2>
         <input type="text" id="login-username" placeholder="Nom d'utilisateur" required>
         <input type="password" id="login-password" placeholder="Mot de passe" required>
@@ -75,7 +80,7 @@
     </div>
 
     <!-- Inscription Form -->
-    <div id="register-form" style="display: none;">
+    <div id="register-form" class="form-section hidden">
         <h2 class="form-header">S'inscrire</h2>
         <input type="text" id="register-username" placeholder="Nom d'utilisateur" required>
         <input type="password" id="register-password" placeholder="Mot de passe" required>
@@ -86,20 +91,17 @@
 </div>
 
 <script>
-    // Function to toggle between login and register form
+    // Toggle between login and register forms
     function toggleForm() {
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        if (loginForm.style.display === 'none') {
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-        } else {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-        }
+
+        // Toggle visibility of login and register forms
+        loginForm.classList.toggle('hidden');
+        registerForm.classList.toggle('hidden');
     }
 
-    // Function to register a new user
+    // Function to handle registration
     function register() {
         const username = document.getElementById('register-username').value;
         const password = document.getElementById('register-password').value;
@@ -114,7 +116,7 @@
                 profilePicture: URL.createObjectURL(profilePicture)
             };
 
-            // Check if user already exists
+            // Check if the user already exists
             if (users.some(user => user.username === username)) {
                 alert("Ce nom d'utilisateur est déjà pris !");
                 return;
@@ -129,7 +131,7 @@
         }
     }
 
-    // Function to log in an existing user
+    // Function to handle login
     function login() {
         const username = document.getElementById('login-username').value;
         const password = document.getElementById('login-password').value;
