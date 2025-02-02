@@ -55,7 +55,17 @@ header {
 #map {
     width: 100%;
     height: 80vh;
-    background: gray;
+    position: relative;
+}
+
+#map-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(169, 169, 169, 0.6); /* Gris clair */
+    z-index: 1;
 }
 
 /* Menu */
