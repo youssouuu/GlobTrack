@@ -1,124 +1,134 @@
-/* Styles de base */
+/* Style global */
 body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.top-bar {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Section d'authentification */
+#auth-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
 }
 
-.profile-section {
-  cursor: pointer;
-  position: relative;
+#auth-container {
+    width: 300px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.profile-pic {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+#auth-title {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.profile-dropdown {
-  display: none;
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: white;
-  border: 1px solid #ccc;
-  padding: 10px;
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.profile-dropdown button {
-  background: none;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5c6bc0;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.profile-dropdown button:hover {
-  background-color: #f1f1f1;
+button:hover {
+    background-color: #3949ab;
 }
 
-.auth-form {
-  margin: 50px auto;
-  width: 300px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* Section principale après connexion */
+#main-section {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.auth-form input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+/* Barre du haut */
+#top-bar {
+    background-color: #5c6bc0;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
 }
 
-.auth-form button {
-  width: 100%;
-  padding: 10px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
+#menu-btn {
+    font-size: 30px;
+    cursor: pointer;
 }
 
-.auth-form button:hover {
-  background-color: #555;
+#exploration {
+    font-size: 18px;
 }
 
-.side-menu {
-  position: fixed;
-  left: -250px;
-  top: 0;
-  width: 250px;
-  height: 100%;
-  background-color: #333;
-  padding-top: 20px;
-  transition: 0.3s;
+#profile-pic img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
 }
 
-.side-menu .menu-content {
-  color: white;
-  padding-left: 20px;
+/* Menu latéral */
+#sidebar {
+    position: absolute;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #3949ab;
+    transition: left 0.3s;
+    padding-top: 50px;
 }
 
-.side-menu button {
-  background: none;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
+#sidebar ul {
+    list-style: none;
+    padding: 0;
 }
 
-.side-menu button:hover {
-  background-color: #555;
+#sidebar ul li {
+    padding: 10px;
+    color: #fff;
+    cursor: pointer;
 }
 
-.menu-btn {
-  font-size: 30px;
-  cursor: pointer;
+#sidebar ul li:hover {
+    background-color: #5c6bc0;
 }
 
-/* Affiche le menu latéral */
-#side-menu.open {
-  left: 0;
+/* Menu profil */
+#profile-menu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Carte */
-#map {
-  width: 100%;
-  height: 400px;
-  background-color: #d3d3d3;
-  margin-top: 20px;
+#profile-menu button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5c6bc0;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#profile-menu button:hover {
+    background-color: #3949ab;
 }
