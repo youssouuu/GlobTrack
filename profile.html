@@ -42,27 +42,4 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Veuillez ajouter une photo de profil</h1>
-    <input type="file" id="uploadProfilePic" onchange="saveProfilePic()">
-    <button onclick="saveProfilePic()">Sauvegarder</button>
-</div>
-
-<script>
-    function saveProfilePic() {
-        const file = document.getElementById('uploadProfilePic').files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-                currentUser.profilePic = e.target.result;
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                window.location.href = 'index.html';  // Redirige vers la carte après avoir ajouté la photo
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
-
-</body>
-</html>
+    
