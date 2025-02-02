@@ -1,264 +1,62 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion / Inscription</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f7f7;
-        }
-
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            position: relative;
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"], input[type="password"], input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 4px;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .toggle-link {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-            cursor: pointer;
-            color: #3498db;
-        }
-
-        .toggle-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Style pour le menu latéral */
-        #menu {
-            position: fixed;
-            top: 0;
-            right: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #2c3e50;
-            transition: right 0.3s;
-            padding: 20px;
-            color: white;
-            z-index: 1000;
-        }
-
-        #menu a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 10px 0;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-
-        #menu a:hover {
-            background-color: #34495e;
-        }
-
-        .menu-toggle {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            cursor: pointer;
-        }
-
-        /* Pour la photo de profil */
-        .profile-picture {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
-        /* Pour la barre latérale et son animation */
-        #sidebar-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: -250px;
-            height: 100%;
-            background-color: #34495e;
-            width: 250px;
-            transition: 0.3s;
-            padding: 20px;
-            color: white;
-            z-index: 1001;
-        }
-
-        #sidebar-menu.open {
-            left: 0;
-        }
-
-        #sidebar-menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        #sidebar-menu a:hover {
-            background-color: #2980b9;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoTrack</title>
+  <link rel="stylesheet" href="style.css"> <!-- Lien vers le fichier CSS -->
 </head>
 <body>
 
-<div class="container" id="form-container">
-    <!-- Connexion Form -->
-    <div id="login-form" class="form-container">
-        <h2 class="form-header">Se connecter</h2>
-        <input type="text" id="login-username" placeholder="Nom d'utilisateur" required>
-        <input type="password" id="login-password" placeholder="Mot de passe" required>
-        <button onclick="login()">Se connecter</button>
-        <p class="toggle-link" onclick="toggleForm()">Pas encore de compte ? S'inscrire</p>
+  <!-- Barre en haut : Affichée une fois connecté -->
+  <div id="top-bar" class="top-bar" style="display: none;">
+    <button class="menu-btn" onclick="toggleMenu()">&#9776;</button> <!-- Menu latéral -->
+    <div class="exploration-percent">Exploration : 50%</div>
+    <div class="profile-section" onclick="toggleProfileMenu()">
+      <img id="profile-pic" src="default-profile.png" alt="Profil" class="profile-pic">
+      <div id="profile-menu" class="profile-dropdown">
+        <button onclick="logout()">Déconnexion</button>
+        <button onclick="changeProfilePic()">Changer la photo</button>
+        <button onclick="changePassword()">Changer le mot de passe</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu latéral : Affiché lorsqu'on clique sur les trois traits -->
+  <div id="side-menu" class="side-menu">
+    <div class="menu-content">
+      <h3>Menu</h3>
+      <button onclick="openMap()">Carte</button>
+      <button onclick="profileSettings()">Paramètres Profil</button>
+      <button onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- Formulaire de Connexion -->
+  <div id="auth-container">
+    <div id="login-form" class="auth-form">
+      <h2>Se connecter</h2>
+      <form id="login" method="POST" onsubmit="return loginUser()">
+        <input type="text" placeholder="Nom d'utilisateur" id="login-username" required>
+        <input type="password" placeholder="Mot de passe" id="login-password" required>
+        <button type="submit">Se connecter</button>
+        <p>Pas de compte ? <button type="button" onclick="showSignup()">Inscrivez-vous</button></p>
+      </form>
     </div>
 
-    <!-- Inscription Form -->
-    <div id="register-form" class="form-container hidden">
-        <h2 class="form-header">S'inscrire</h2>
-        <input type="text" id="register-username" placeholder="Nom d'utilisateur" required>
-        <input type="password" id="register-password" placeholder="Mot de passe" required>
-        <input type="file" id="profile-picture" accept="image/*" required>
-        <button onclick="register()">S'inscrire</button>
-        <p class="toggle-link" onclick="toggleForm()">Déjà un compte ? Se connecter</p>
+    <!-- Formulaire d'Inscription -->
+    <div id="signup-form" class="auth-form" style="display: none;">
+      <h2>S'inscrire</h2>
+      <form id="signup" method="POST" onsubmit="return registerUser()">
+        <input type="text" placeholder="Nom d'utilisateur" id="signup-username" required>
+        <input type="password" placeholder="Mot de passe" id="signup-password" required>
+        <input type="file" id="signup-profile-pic" required>
+        <button type="submit">S'inscrire</button>
+        <p>Vous avez déjà un compte ? <button type="button" onclick="showLogin()">Se connecter</button></p>
+      </form>
     </div>
+  </div>
 
-    <!-- Menu latéral -->
-    <div id="sidebar-menu">
-        <a href="#" onclick="updateProfilePicture()">Changer la photo de profil</a>
-        <a href="#" onclick="changePassword()">Changer le mot de passe</a>
-        <a href="#" onclick="logout()">Se déconnecter</a>
-    </div>
-
-    <!-- Icône Hamburger pour menu -->
-    <div class="menu-toggle" onclick="toggleSidebarMenu()">&#9776;</div>
-
-    <!-- Photo de profil -->
-    <img id="profile-image" src="default-profile.jpg" alt="Profil" class="profile-picture" onclick="toggleSidebarMenu()">
-</div>
-
-<script>
-    // Toggle form visibility
-    function toggleForm() {
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-
-        loginForm.classList.toggle('hidden');
-        registerForm.classList.toggle('hidden');
-    }
-
-    // Handle login
-    function login() {
-        const username = document.getElementById('login-username').value;
-        const password = document.getElementById('login-password').value;
-
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const currentUser = users.find(user => user.username === username && user.password === password);
-
-        if (currentUser) {
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            alert("Bienvenue " + username);
-            window.location.href = 'index.html';  // Page principale après connexion
-        } else {
-            alert('Nom d\'utilisateur ou mot de passe incorrect');
-        }
-    }
-
-    // Handle register
-    function register() {
-        const username = document.getElementById('register-username').value;
-        const password = document.getElementById('register-password').value;
-        const profilePicture = document.getElementById('profile-picture').files[0];
-
-        if (username && password && profilePicture) {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const newUser = {
-                username: username,
-                password: password,
-                profilePicture: URL.createObjectURL(profilePicture)
-            };
-
-            if (users.some(user => user.username === username)) {
-                alert("Ce nom d'utilisateur est déjà pris !");
-                return;
-            }
-
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-            alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-            toggleForm();  // Switch back to login form
-        } else {
-            alert("Veuillez remplir tous les champs.");
-        }
-    }
-
-    // Toggle sidebar menu visibility
-    function toggleSidebarMenu() {
-        const sidebarMenu = document.getElementById('sidebar-menu');
-        sidebarMenu.classList.toggle('open');
-    }
-
-    // Logout function
-    function logout() {
-        localStorage.removeItem('currentUser');
-        alert("Vous êtes déconnecté !");
-        window.location.href = 'login.html';  // Rediriger vers la page de connexion
-    }
-
-    // Update profile picture (for example)
-    function updateProfilePicture() {
-        alert("Fonction de mise à jour de la photo de profil");
-    }
-
-    // Change password (for example)
-    function changePassword() {
-        alert("Fonction de changement de mot de passe");
-    }
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
