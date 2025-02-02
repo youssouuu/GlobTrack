@@ -3,77 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - GlobTrack</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 20px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        .login-container img {
-            width: 100px;
-            margin-bottom: 20px;
-        }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .login-container button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>GlobTrack - Connexion/Inscription</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>GlobTrack</h1>
 
-<div class="login-container">
-    <img src="logo.png" alt="GlobTrack Logo">
-    <h2>Connexion à GlobTrack</h2>
-    <input type="text" id="username" placeholder="Nom d'utilisateur">
-    <input type="password" id="password" placeholder="Mot de passe">
-    <button id="loginBtn">Se connecter</button>
+        <!-- Formulaire de Connexion -->
+        <div id="login-form" class="form-container">
+            <h2>Se connecter</h2>
+            <input type="text" id="login-username" placeholder="Nom d'utilisateur" required>
+            <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <button onclick="login()">Connexion</button>
+            <p>Pas encore de compte ? <a href="#" onclick="toggleForms()">Inscription</a></p>
+        </div>
 
-    <!-- Connexion avec Google (Facultatif) -->
-    <div id="g_id_onload"
-         data-client_id="VOTRE_CLIENT_ID.apps.googleusercontent.com"
-         data-login_uri="map.html"
-         data-auto_prompt="false">
+        <!-- Formulaire d'Inscription -->
+        <div id="register-form" class="form-container hidden">
+            <h2>Créer un compte</h2>
+            <input type="text" id="register-username" placeholder="Nom d'utilisateur" required>
+            <input type="password" id="register-password" placeholder="Mot de passe" required>
+            <button onclick="register()">Inscription</button>
+            <p>Déjà un compte ? <a href="#" onclick="toggleForms()">Connexion</a></p>
+        </div>
     </div>
-    <div class="g_id_signin"
-         data-type="standard"
-         data-size="large"
-         data-theme="outline"
-         data-text="sign_in_with"
-         data-shape="rectangular"
-         data-logo_alignment="left">
-    </div>
-</div>
 
-<!-- Script Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
