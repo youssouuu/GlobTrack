@@ -5,7 +5,6 @@ body {
     padding: 0;
 }
 
-/* Section d'authentification */
 #auth-section {
     display: flex;
     justify-content: center;
@@ -20,11 +19,6 @@ body {
     border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#auth-title {
-    text-align: center;
-    margin-bottom: 20px;
 }
 
 input {
@@ -49,14 +43,6 @@ button:hover {
     background-color: #3949ab;
 }
 
-/* Section principale après connexion */
-#main-section {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-/* Barre du haut */
 #top-bar {
     background-color: #5c6bc0;
     padding: 10px;
@@ -71,15 +57,16 @@ button:hover {
     cursor: pointer;
 }
 
-#exploration {
-    font-size: 18px;
-}
-
 #profile-pic img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+#map-container {
+    height: 500px;
+    margin-top: 20px;
 }
 
 /* Menu latéral */
@@ -109,7 +96,7 @@ button:hover {
     background-color: #5c6bc0;
 }
 
-/* Menu profil */
+/* Menu Profil */
 #profile-menu {
     position: absolute;
     top: 60px;
