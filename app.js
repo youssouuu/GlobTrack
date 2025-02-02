@@ -1,24 +1,18 @@
 let currentUser = null;
 let currentTheme = localStorage.getItem('theme') || "light";
+let map;
+let userMarker;
 
-// Afficher le formulaire d'inscription
 function showRegister() {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("register-form").style.display = "block";
 }
 
-// Afficher le formulaire de connexion
 function showLogin() {
     document.getElementById("login-form").style.display = "block";
     document.getElementById("register-form").style.display = "none";
 }
 
-// Hachage simple du mot de passe (pour la démo uniquement)
-function hashPassword(password) {
-    return btoa(password); // Simple encodage base64 (non sécurisé pour production)
-}
-
-// Inscription
 function register() {
     const username = document.getElementById("new-username").value.trim();
     const password = document.getElementById("new-password").value.trim();
@@ -58,7 +52,10 @@ function register() {
     }
 }
 
-// Connexion
+function hashPassword(password) {
+    return btoa(password); 
+}
+
 function login() {
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
@@ -75,10 +72,10 @@ function login() {
     document.getElementById("app-container").style.display = "block";
     document.getElementById("profile-pic-display").src = userData.profilePic;
 
-    applyTheme(currentTheme); // Appliquer le thème choisi lors de la connexion
+    applyTheme(currentTheme); 
+    initializeMap(); 
 }
 
-// Appliquer un thème
 function applyTheme(theme) {
     const themes = {
         light: {
@@ -117,68 +114,57 @@ function applyTheme(theme) {
     }
 
     currentTheme = theme;
-    localStorage.setItem('theme', theme); // Sauvegarde du thème
+    localStorage.setItem('theme', theme); 
 }
 
-// Changer de thème via le menu
-function changeTheme(theme) {
-    applyTheme(theme);
-}
+function initializeMap() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
-// Menu latéral
-function toggleMenu() {
-    document.getElementById("menu").classList.toggle("active");
-}
+            map = L.map('map').setView([latitude, longitude], 13);
 
-// Menu profil
-function toggleProfileMenu() {
-    document.getElementById("profile-menu").classList.toggle("active");
-}
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
 
-// Déconnexion
-function logout() {
-    currentUser = null;
-    document.getElementById("auth-container").style.display = "block";
-    document.getElementById("app-container").style.display = "none";
-}
+            userMarker = L.marker([latitude, longitude]).addTo(map)
+                .bindPopup("Vous êtes ici")
+                .openPopup();
 
-// Modifier la photo de profil
-function changeProfilePic() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
+            // Griser la carte au départ
+            document.getElementById("map").style.filter = "grayscale(100%)";
+            let opacity = 1;
 
-    fileInput.onchange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const userData = JSON.parse(localStorage.getItem(currentUser));
-                userData.profilePic = e.target.result;
-                localStorage.setItem(currentUser, JSON.stringify(userData));
-                document.getElementById("profile-pic-display").src = e.target.result;
-                alert("Photo de profil mise à jour !");
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+            // Effectuer un fade in de la carte (passer du gris à la carte normale)
+            const fadeInterval = setInterval(() => {
+                if (opacity <= 0) {
+                    clearInterval(fadeInterval);
+                    document.getElementById("map").style.filter = "none";
+                }
+                document.getElementById("map").style.filter = `grayscale(${100 - opacity}%)`;
+                opacity -= 2; // Effectue un dégradé vers la normalité
+            }, 50);
 
-    fileInput.click();
-}
+            // Ajouter une grille de carrés de 50px
+            const bounds = map.getBounds();
+            const gridSize = 50; // taille du carré en pixels
+            const xStart = Math.floor(bounds.getWest() / gridSize) * gridSize;
+            const yStart = Math.floor(bounds.getSouth() / gridSize) * gridSize;
+            
+            for (let x = xStart; x < bounds.getEast(); x += gridSize) {
+                for (let y = yStart; y < bounds.getNorth(); y += gridSize) {
+                    const squareBounds = [
+                        [y, x], 
+                        [y + gridSize, x + gridSize]
+                    ];
+                    L.rectangle(squareBounds, { color: "#ff7800", weight: 1, fillOpacity: 0 }).addTo(map);
+                }
+            }
 
-// Changer le mot de passe
-function changePassword() {
-    const newPassword = prompt("Entrez un nouveau mot de passe.");
-    if (newPassword) {
-        const userData = JSON.parse(localStorage.getItem(currentUser));
-        userData.password = hashPassword(newPassword);
-        localStorage.setItem(currentUser, JSON.stringify(userData));
-        alert("Mot de passe modifié !");
+        });
+    } else {
+        alert("La géolocalisation n'est pas supportée par votre navigateur.");
     }
 }
-
-// Appliquer le thème au chargement de la page
-document.addEventListener('DOMContentLoaded', () => {
-    applyTheme(currentTheme);
-});
-                
