@@ -1,13 +1,14 @@
-// Variables globales pour gérer l'état de l'utilisateur
 let loggedIn = false;
 let userProfilePic = null;
+let explorationPercentage = 0;
+let position = { lat: 0, lon: 0 };  // Position actuelle de l'utilisateur
 
 // Fonction de connexion
 function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Vérifier les identifiants (à remplacer par une vérification réelle)
+    // Vérification des informations de connexion (à faire côté serveur)
     if (username && password) {
         loggedIn = true;
         showMainSection();
@@ -21,14 +22,14 @@ function signup() {
     const profilePic = document.getElementById('profile-pic').files[0];
 
     if (newUsername && newPassword && profilePic) {
-        // Sauvegarder les informations (à faire côté serveur)
+        // Sauvegarder les informations d'inscription (à faire côté serveur)
         loggedIn = true;
-        userProfilePic = URL.createObjectURL(profilePic); // Simuler l'upload de la photo
+        userProfilePic = URL.createObjectURL(profilePic);
         showMainSection();
     }
 }
 
-// Fonction pour afficher la page principale
+// Fonction pour afficher la page principale après connexion
 function showMainSection() {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('main-section').style.display = 'flex';
@@ -38,15 +39,12 @@ function showMainSection() {
     }
 }
 
-// Fonction pour changer la photo de profil
-function changeProfilePic() {
-    // Code pour changer la photo (à ajouter)
-}
-
 // Fonction de déconnexion
 function logout() {
     loggedIn = false;
     userProfilePic = null;
+    explorationPercentage = 0;
+    position = { lat: 0, lon: 0 }; // Réinitialiser la position
     document.getElementById('profile-avatar').src = 'default-avatar.png';
     showLoginForm();
 }
@@ -71,8 +69,28 @@ function toggleMenu() {
     sidebar.style.left = sidebar.style.left === '0px' ? '-250px' : '0px';
 }
 
-// Fonction pour afficher/masquer le menu de profil
-function toggleProfileMenu() {
-    const profileMenu = document.getElementById('profile-menu');
-    profileMenu.style.display = profileMenu.style.display === 'none' ? 'block' : 'none';
+// Fonction pour changer la photo de profil
+function changeProfilePic() {
+    const newPic = prompt("Entrez l'URL de la nouvelle photo de profil");
+    if (newPic) {
+        userProfilePic = newPic;
+        document.getElementById('profile-avatar').src = newPic;
+    }
 }
+
+// Fonction pour changer le mot de passe (simple exemple)
+function changePassword() {
+    const newPassword = prompt("Entrez le nouveau mot de passe");
+    if (newPassword) {
+        // Mettre à jour le mot de passe (faire côté serveur)
+        alert("Mot de passe mis à jour !");
+    }
+}
+
+// Fonction pour mettre à jour le pourcentage d'exploration
+function updateExplorationPercentage() {
+    explorationPercentage += 0.1;  // Simuler l'exploration (à faire en fonction du déplacement réel)
+    document.getElementById('exploration').textContent = `Exploration : ${Math.round(explorationPercentage)}%`;
+}
+
+setInterval(updateExplorationPercentage, 1000); // Mettre à jour toutes les secondes
