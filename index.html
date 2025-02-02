@@ -1,67 +1,70 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoTrack</title>
-  <link rel="stylesheet" href="style.css"> <!-- Lien vers le fichier CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoTrack</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <!-- Page de Connexion / Inscription -->
+    <div id="auth-section">
+        <div id="auth-container">
+            <h2 id="auth-title">Se connecter</h2>
 
-  <!-- Barre en haut (apparaît après la connexion) -->
-  <div id="top-bar" class="top-bar" style="display: none;">
-    <button class="menu-btn" onclick="toggleMenu()">&#9776;</button> <!-- Menu latéral -->
-    <div class="exploration-percent">Exploration : 50%</div>
-    <div class="profile-section" onclick="toggleProfileMenu()">
-      <img id="profile-pic" src="default-profile.png" alt="Profil" class="profile-pic">
-      <div id="profile-menu" class="profile-dropdown">
-        <button onclick="logout()">Déconnexion</button>
-        <button onclick="changeProfilePic()">Changer la photo</button>
-        <button onclick="changePassword()">Changer le mot de passe</button>
-      </div>
-    </div>
-  </div>
+            <!-- Formulaire de connexion -->
+            <div id="login-form">
+                <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+                <input type="password" id="password" placeholder="Mot de passe" required>
+                <button onclick="login()">Se connecter</button>
+                <button id="signup-btn" onclick="showSignupForm()">S'inscrire</button>
+            </div>
 
-  <!-- Menu latéral (apparaît lorsqu'on clique sur les trois traits) -->
-  <div id="side-menu" class="side-menu">
-    <div class="menu-content">
-      <h3>Menu</h3>
-      <button onclick="openMap()">Carte</button>
-      <button onclick="profileSettings()">Paramètres Profil</button>
-      <button onclick="logout()">Déconnexion</button>
-    </div>
-  </div>
-
-  <!-- Formulaire de Connexion -->
-  <div id="auth-container">
-    <div id="login-form" class="auth-form">
-      <h2>Se connecter</h2>
-      <form id="login" method="POST" onsubmit="return loginUser()">
-        <input type="text" placeholder="Nom d'utilisateur" id="login-username" required>
-        <input type="password" placeholder="Mot de passe" id="login-password" required>
-        <button type="submit">Se connecter</button>
-        <p>Pas de compte ? <button type="button" onclick="showSignup()">Inscrivez-vous</button></p>
-      </form>
+            <!-- Formulaire d'inscription -->
+            <div id="signup-form" style="display: none;">
+                <input type="text" id="new-username" placeholder="Nom d'utilisateur" required>
+                <input type="password" id="new-password" placeholder="Mot de passe" required>
+                <input type="file" id="profile-pic" accept="image/*" required>
+                <button onclick="signup()">S'inscrire</button>
+                <button onclick="showLoginForm()">Se connecter</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Formulaire d'Inscription -->
-    <div id="signup-form" class="auth-form" style="display: none;">
-      <h2>S'inscrire</h2>
-      <form id="signup" method="POST" onsubmit="return registerUser()">
-        <input type="text" placeholder="Nom d'utilisateur" id="signup-username" required>
-        <input type="password" placeholder="Mot de passe" id="signup-password" required>
-        <input type="file" id="signup-profile-pic" required>
-        <button type="submit">S'inscrire</button>
-        <p>Vous avez déjà un compte ? <button type="button" onclick="showLogin()">Se connecter</button></p>
-      </form>
+    <!-- Interface après connexion -->
+    <div id="main-section" style="display: none;">
+        <!-- Barre en haut -->
+        <div id="top-bar">
+            <div id="menu-btn" onclick="toggleMenu()">&#9776;</div>
+            <div id="exploration">Exploration : 0%</div>
+            <div id="profile-pic" onclick="toggleProfileMenu()">
+                <img src="default-avatar.png" id="profile-avatar" alt="Profil" />
+            </div>
+        </div>
+
+        <!-- Carte -->
+        <div id="map-container">
+            <!-- Intégration de la carte (avec API Google ou autre service) -->
+        </div>
+
+        <!-- Menu latéral -->
+        <div id="sidebar">
+            <ul>
+                <li><a href="#">Changer photo de profil</a></li>
+                <li><a href="#" onclick="logout()">Se déconnecter</a></li>
+            </ul>
+        </div>
+
+        <!-- Menu de Profil -->
+        <div id="profile-menu" style="display: none;">
+            <button onclick="changeProfilePic()">Changer photo</button>
+            <button onclick="logout()">Se déconnecter</button>
+        </div>
     </div>
-  </div>
 
-  <!-- Carte (initialement masquée) -->
-  <div id="map-container" style="display: none;">
-    <div id="map"></div>
-  </div>
-
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
+
 </html>
