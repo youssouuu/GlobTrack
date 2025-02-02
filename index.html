@@ -3,32 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlobTrack - Connexion/Inscription</title>
+    <title>GlobTrack - Carte</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <style>
+        #map {
+            height: 80vh;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        .top-bar .left {
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .top-bar .center {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .top-bar .right img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .exploration {
+            font-size: 18px;
+        }
+
+        .logout-btn {
+            margin: 10px;
+            background: #e74c3c;
+            padding: 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .profile-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-btn {
+            margin-top: 5px;
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>GlobTrack</h1>
-
-        <!-- Formulaire de Connexion -->
-        <div id="login-form" class="form-container">
-            <h2>Se connecter</h2>
-            <input type="text" id="login-username" placeholder="Nom d'utilisateur" required>
-            <input type="password" id="login-password" placeholder="Mot de passe" required>
-            <button onclick="login()">Connexion</button>
-            <p>Pas encore de compte ? <a href="#" onclick="toggleForms()">Inscription</a></p>
-        </div>
-
-        <!-- Formulaire d'Inscription -->
-        <div id="register-form" class="form-container hidden">
-            <h2>Créer un compte</h2>
-            <input type="text" id="register-username" placeholder="Nom d'utilisateur" required>
-            <input type="password" id="register-password" placeholder="Mot de passe" required>
-            <button onclick="register()">Inscription</button>
-            <p>Déjà un compte ? <a href="#" onclick="toggleForms()">Connexion</a></p>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="left">☰</div>
+        <div class="center" id="explorationPercentage">Exploration : 0%</div>
+        <div class="right">
+            <div class="profile-container">
+                <img src="default-profile.png" id="profilePic" alt="Profile Picture">
+                <input type="file" id="uploadProfilePic" class="upload-btn" onchange="updateProfilePic()" style="display:none;">
+                <button onclick="document.getElementById('uploadProfilePic').click()">Changer Photo</button>
+            </div>
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        let map, userPath = [], exploredAreas = [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+        // Vérifier si l'utilisateur est connecté
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        }
+
+        // Initialisation de la carte
+        function initMap() {
+            map = L.map('map').fitWorld();
+
+            // Utiliser OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            map.locate({ setView: true, maxZoom: 16 });
+
+            map.on('locationfound', onLocationFound);
+            map.on('locationerror', onLocationError);
+        }
+
+        function onLocationFound(e) {
+            const userLocation = e.latlng;
+
+            // Marqueur de l'utilisateur
+            L.marker(userLocation).addTo(map).bindPopup("Vous êtes ici").openPopup();
+
+            userPath.push(userLocation);
+            addExploredArea(userLocation);
+            updateExplorationPercentage();
+
+            // Suivre les déplacements
+            map.on('locationfound', updatePosition);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        function updatePosition(e) {
+            const newLocation = e.latlng;
+            userPath.push(newLocation);
+            addExploredArea(newLocation);
+
+            // Tracer le chemin parcouru
+            L.polyline(userPath, { color: '#4CAF50' }).addTo(map);
+            updateExplorationPercentage();
+        }
+
+        function addExploredArea(location) {
+            // Dégriser une zone de 50px autour de l'utilisateur
+            L.circle(location, {
+                color: '#4CAF50',
+                fillColor: '#4CAF50',
+                fillOpacity: 0.35,
+                radius: 50
+            }).addTo(map);
+        }
+
+        function updateExplorationPercentage() {
+            const totalArea = map.getSize().x * map.getSize().y;
+            const exploredArea = userPath.length * 50; // Estimation de l'aire explorée
+            const explorationPercentage = (exploredArea / totalArea) * 100;
+
+            document.getElementById('explorationPercentage').textContent = `Exploration : ${Math.round(explorationPercentage)}%`;
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function updateProfilePic() {
+            const file = document.getElementById('uploadProfilePic').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                    currentUser.profilePic = e.target.result;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        initMap();
+    </script>
 </body>
 </html>
