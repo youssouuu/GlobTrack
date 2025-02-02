@@ -9,12 +9,12 @@
 </head>
 
 <body>
-    <!-- Page de Connexion / Inscription -->
+
+    <!-- Page d'authentification -->
     <div id="auth-section">
         <div id="auth-container">
             <h2 id="auth-title">Se connecter</h2>
 
-            <!-- Formulaire de connexion -->
             <div id="login-form">
                 <input type="text" id="username" placeholder="Nom d'utilisateur" required>
                 <input type="password" id="password" placeholder="Mot de passe" required>
@@ -22,7 +22,6 @@
                 <button id="signup-btn" onclick="showSignupForm()">S'inscrire</button>
             </div>
 
-            <!-- Formulaire d'inscription -->
             <div id="signup-form" style="display: none;">
                 <input type="text" id="new-username" placeholder="Nom d'utilisateur" required>
                 <input type="password" id="new-password" placeholder="Mot de passe" required>
@@ -33,7 +32,7 @@
         </div>
     </div>
 
-    <!-- Interface après connexion -->
+    <!-- Interface principale après connexion -->
     <div id="main-section" style="display: none;">
         <!-- Barre en haut -->
         <div id="top-bar">
@@ -46,13 +45,14 @@
 
         <!-- Carte -->
         <div id="map-container">
-            <!-- Intégration de la carte (avec API Google ou autre service) -->
+            <!-- La carte sera intégrée ici (à l'aide d'une API comme Google Maps ou OpenStreetMap) -->
         </div>
 
         <!-- Menu latéral -->
         <div id="sidebar">
             <ul>
-                <li><a href="#">Changer photo de profil</a></li>
+                <li><a href="#" onclick="changeProfilePic()">Changer photo de profil</a></li>
+                <li><a href="#" onclick="changePassword()">Changer mot de passe</a></li>
                 <li><a href="#" onclick="logout()">Se déconnecter</a></li>
             </ul>
         </div>
@@ -65,6 +65,7 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="map.js"></script>
 </body>
 
 </html>
