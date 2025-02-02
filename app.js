@@ -2,6 +2,9 @@ let currentUser = null;
 let currentTheme = "light";
 let userMarker = null;
 let userPosition = { lat: null, lon: null };
+let exploredSquares = new Set(); // Pour suivre les carrés explorés
+let totalSquares = 0; // Nombre total de carrés de la carte
+let explorationProgress = 0; // Pourcentage d'exploration
 
 // Afficher le formulaire d'inscription
 function showRegister() {
@@ -94,23 +97,10 @@ function changeTheme() {
     }
 }
 
-// Menu latéral : Ouvrir et fermer
-function toggleMenu() {
-    const menu = document.getElementById("menu");
-    menu.classList.toggle("active");
-
-    // Si le menu est ouvert, on verrouille le fond pour empêcher de cliquer en dehors
-    const isActive = menu.classList.contains("active");
-    if (isActive) {
-        document.body.style.overflow = "hidden"; // Désactiver le défilement de la page
-    } else {
-        document.body.style.overflow = "auto"; // Réactiver le défilement
-    }
-}
-
-// Menu profil
+// Ouvrir et fermer le menu
 function toggleProfileMenu() {
-    document.getElementById("profile-menu").classList.toggle("active");
+    const profileMenu = document.getElementById("profile-menu");
+    profileMenu.classList.toggle("active");
 }
 
 // Déconnexion
@@ -152,34 +142,17 @@ function showMap() {
             const lon = position.coords.longitude;
 
             // Créer une carte centrée sur la position de l'utilisateur
-            const map = L.map('map').setView([lat, lon], 13); // Zoom de niveau 13 (ajustable)
+            const map = L.map('map').setView([lat, lon], 13);
 
             // Ajouter un fond de carte OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Ajouter un fond gris à la carte
-            const grayLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                opacity: 0.5
-            }).addTo(map);
-
             // Ajouter un marqueur à la position actuelle
             userMarker = L.marker([lat, lon]).addTo(map)
                 .bindPopup("Vous êtes ici.")
                 .openPopup();
-
-            // Suivre la position de l'utilisateur
-            map.on('moveend', function () {
-                const currentBounds = map.getBounds();
-                grayLayer.setOpacity(0.5); // Assurer la carte reste grisée à l'extérieur du carré
-
-                if (userPosition.lat !== lat || userPosition.lon !== lon) {
-                    userPosition = { lat: lat, lon: lon };
-                    userMarker.setLatLng([lat, lon]).addTo(map);
-                }
-            });
         }, function (error) {
             alert("Impossible de récupérer votre position.");
         });
