@@ -36,10 +36,17 @@
             border: none;
             cursor: pointer;
             border-radius: 4px;
+            width: 48%;
+            margin-right: 4%;
         }
 
         button:hover {
             background-color: #2980b9;
+        }
+
+        .login-container .button-container {
+            display: flex;
+            justify-content: space-between;
         }
 
         .register-link {
@@ -55,8 +62,12 @@
     <h2>Se connecter</h2>
     <input type="text" id="username" placeholder="Nom d'utilisateur" required>
     <input type="password" id="password" placeholder="Mot de passe" required>
-    <button onclick="login()">Se connecter</button>
-    <a href="register.html" class="register-link">Pas encore de compte ? Inscris-toi ici</a>
+
+    <!-- Container pour les boutons de connexion et inscription -->
+    <div class="button-container">
+        <button onclick="login()">Se connecter</button>
+        <button onclick="window.location.href='register.html'">S'inscrire</button>
+    </div>
 </div>
 
 <script>
