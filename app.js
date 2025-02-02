@@ -1,21 +1,22 @@
 let currentUser = null;
-let currentTheme = localStorage.getItem('theme') || "light";
-let map;
-let userMarker;
+let currentTheme = "light";
 
+// Afficher le formulaire d'inscription
 function showRegister() {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("register-form").style.display = "block";
 }
 
+// Afficher le formulaire de connexion
 function showLogin() {
     document.getElementById("login-form").style.display = "block";
     document.getElementById("register-form").style.display = "none";
 }
 
+// Inscription
 function register() {
-    const username = document.getElementById("new-username").value.trim();
-    const password = document.getElementById("new-password").value.trim();
+    const username = document.getElementById("new-username").value;
+    const password = document.getElementById("new-password").value;
     const profilePic = document.getElementById("profile-pic").files[0];
 
     if (!username || !password) {
@@ -31,8 +32,8 @@ function register() {
     const reader = new FileReader();
     reader.onload = function (e) {
         const userData = {
-            password: hashPassword(password),
-            profilePic: e.target.result || "default-avatar.png"
+            password: password,
+            profilePic: e.target.result
         };
         localStorage.setItem(username, JSON.stringify(userData));
         alert("Inscription réussie !");
@@ -43,7 +44,7 @@ function register() {
         reader.readAsDataURL(profilePic);
     } else {
         const userData = {
-            password: hashPassword(password),
+            password: password,
             profilePic: "default-avatar.png"
         };
         localStorage.setItem(username, JSON.stringify(userData));
@@ -52,17 +53,14 @@ function register() {
     }
 }
 
-function hashPassword(password) {
-    return btoa(password); 
-}
-
+// Connexion
 function login() {
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
 
     const userData = JSON.parse(localStorage.getItem(username));
 
-    if (!userData || userData.password !== hashPassword(password)) {
+    if (!userData || userData.password !== password) {
         alert("Nom d'utilisateur ou mot de passe incorrect.");
         return;
     }
@@ -72,97 +70,99 @@ function login() {
     document.getElementById("app-container").style.display = "block";
     document.getElementById("profile-pic-display").src = userData.profilePic;
 
-    applyTheme(currentTheme); 
-    initializeMap(); 
+    showMap();
 }
 
-function applyTheme(theme) {
-    const themes = {
-        light: {
-            "--bg-color": "#f5f5f5",
-            "--text-color": "#333",
-            "--header-color": "#222",
-            "--sidebar-color": "#333",
-            "--button-color": "#007bff"
-        },
-        dark: {
-            "--bg-color": "#222",
-            "--text-color": "#fff",
-            "--header-color": "#444",
-            "--sidebar-color": "#555",
-            "--button-color": "#28a745"
-        },
-        pastel: {
-            "--bg-color": "#fffbf0",
-            "--text-color": "#5d5d5d",
-            "--header-color": "#ffc1cc",
-            "--sidebar-color": "#ffdde1",
-            "--button-color": "#ff8fab"
-        },
-        highContrast: {
-            "--bg-color": "#000",
-            "--text-color": "#fff",
-            "--header-color": "#ff0000",
-            "--sidebar-color": "#000",
-            "--button-color": "#ffff00"
-        }
-    };
-
-    const selectedTheme = themes[theme];
-    for (const property in selectedTheme) {
-        document.documentElement.style.setProperty(property, selectedTheme[property]);
+// Changement de thème
+function changeTheme() {
+    if (currentTheme === "light") {
+        document.documentElement.style.setProperty("--bg-color", "#222");
+        document.documentElement.style.setProperty("--text-color", "#fff");
+        document.documentElement.style.setProperty("--header-color", "#444");
+        document.documentElement.style.setProperty("--sidebar-color", "#555");
+        document.documentElement.style.setProperty("--button-color", "#28a745");
+        currentTheme = "dark";
+    } else {
+        document.documentElement.style.setProperty("--bg-color", "#f5f5f5");
+        document.documentElement.style.setProperty("--text-color", "#333");
+        document.documentElement.style.setProperty("--header-color", "#222");
+        document.documentElement.style.setProperty("--sidebar-color", "#333");
+        document.documentElement.style.setProperty("--button-color", "#007bff");
+        currentTheme = "light";
     }
-
-    currentTheme = theme;
-    localStorage.setItem('theme', theme); 
 }
 
-function initializeMap() {
+// Menu latéral : Ouvrir et fermer
+function toggleMenu() {
+    const menu = document.getElementById("menu");
+    menu.classList.toggle("active");
+
+    // Si le menu est ouvert, on verrouille le fond pour empêcher de cliquer en dehors
+    const isActive = menu.classList.contains("active");
+    if (isActive) {
+        document.body.style.overflow = "hidden"; // Désactiver le défilement de la page
+    } else {
+        document.body.style.overflow = "auto"; // Réactiver le défilement
+    }
+}
+
+// Menu profil
+function toggleProfileMenu() {
+    document.getElementById("profile-menu").classList.toggle("active");
+}
+
+// Déconnexion
+function logout() {
+    currentUser = null;
+    document.getElementById("auth-container").style.display = "block";
+    document.getElementById("app-container").style.display = "none";
+}
+
+// Modifier la photo de profil
+function changeProfilePic() {
+    const newPic = prompt("Téléchargez une nouvelle photo de profil.");
+    if (newPic) {
+        const userData = JSON.parse(localStorage.getItem(currentUser));
+        userData.profilePic = newPic;
+        localStorage.setItem(currentUser, JSON.stringify(userData));
+        document.getElementById("profile-pic-display").src = newPic;
+        alert("Photo de profil mise à jour !");
+    }
+}
+
+// Changer le mot de passe
+function changePassword() {
+    const newPassword = prompt("Entrez un nouveau mot de passe.");
+    if (newPassword) {
+        const userData = JSON.parse(localStorage.getItem(currentUser));
+        userData.password = newPassword;
+        localStorage.setItem(currentUser, JSON.stringify(userData));
+        alert("Mot de passe modifié !");
+    }
+}
+
+// Afficher une carte avec la position exacte de l'utilisateur
+function showMap() {
+    // Vérifier si l'API Geolocation est disponible
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
 
-            map = L.map('map').setView([latitude, longitude], 13);
+            // Créer une carte centrée sur la position de l'utilisateur
+            const map = L.map('map').setView([lat, lon], 13); // Zoom de niveau 13 (ajustable)
 
+            // Ajouter un fond de carte OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            userMarker = L.marker([latitude, longitude]).addTo(map)
-                .bindPopup("Vous êtes ici")
+            // Ajouter un marqueur à la position actuelle
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup("Vous êtes ici.")
                 .openPopup();
-
-            // Griser la carte au départ
-            document.getElementById("map").style.filter = "grayscale(100%)";
-            let opacity = 1;
-
-            // Effectuer un fade in de la carte (passer du gris à la carte normale)
-            const fadeInterval = setInterval(() => {
-                if (opacity <= 0) {
-                    clearInterval(fadeInterval);
-                    document.getElementById("map").style.filter = "none";
-                }
-                document.getElementById("map").style.filter = `grayscale(${100 - opacity}%)`;
-                opacity -= 2; // Effectue un dégradé vers la normalité
-            }, 50);
-
-            // Ajouter une grille de carrés de 50px
-            const bounds = map.getBounds();
-            const gridSize = 50; // taille du carré en pixels
-            const xStart = Math.floor(bounds.getWest() / gridSize) * gridSize;
-            const yStart = Math.floor(bounds.getSouth() / gridSize) * gridSize;
-            
-            for (let x = xStart; x < bounds.getEast(); x += gridSize) {
-                for (let y = yStart; y < bounds.getNorth(); y += gridSize) {
-                    const squareBounds = [
-                        [y, x], 
-                        [y + gridSize, x + gridSize]
-                    ];
-                    L.rectangle(squareBounds, { color: "#ff7800", weight: 1, fillOpacity: 0 }).addTo(map);
-                }
-            }
-
+        }, function (error) {
+            alert("Impossible de récupérer votre position.");
         });
     } else {
         alert("La géolocalisation n'est pas supportée par votre navigateur.");
