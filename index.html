@@ -21,13 +21,13 @@
         <div id="register-form" style="display: none;">
             <input type="text" id="new-username" placeholder="Nom d'utilisateur">
             <input type="password" id="new-password" placeholder="Mot de passe">
-            <input type="file" id="profile-pic">
+            <input type="file" id="profile-pic" accept="image/*">
             <button onclick="register()">S'inscrire</button>
             <p>Déjà un compte ? <a href="#" onclick="showLogin()">Connecte-toi</a></p>
         </div>
     </div>
 
-    <!-- Interface après connexion -->
+    <!-- Interface principale -->
     <div id="app-container" style="display: none;">
         <header>
             <div id="menu-btn" onclick="toggleMenu()">☰</div>
