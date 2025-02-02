@@ -18,6 +18,16 @@ input, button {
     display: block;
     width: 100%;
     margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: var(--button-color, #007bff);
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 /* Interface principale */
