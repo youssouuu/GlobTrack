@@ -1,82 +1,78 @@
-let isLoggedIn = false; // Indique si l'utilisateur est connecté
-let userProfilePic = "default-profile.png"; // Image par défaut du profil
+// Variables globales pour gérer l'état de l'utilisateur
+let loggedIn = false;
+let userProfilePic = null;
 
-// Afficher la page d'inscription
-function showSignup() {
-  document.getElementById('login-form').style.display = "none";
-  document.getElementById('signup-form').style.display = "block";
+// Fonction de connexion
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Vérifier les identifiants (à remplacer par une vérification réelle)
+    if (username && password) {
+        loggedIn = true;
+        showMainSection();
+    }
 }
 
-// Afficher la page de connexion
-function showLogin() {
-  document.getElementById('login-form').style.display = "block";
-  document.getElementById('signup-form').style.display = "none";
+// Fonction d'inscription
+function signup() {
+    const newUsername = document.getElementById('new-username').value;
+    const newPassword = document.getElementById('new-password').value;
+    const profilePic = document.getElementById('profile-pic').files[0];
+
+    if (newUsername && newPassword && profilePic) {
+        // Sauvegarder les informations (à faire côté serveur)
+        loggedIn = true;
+        userProfilePic = URL.createObjectURL(profilePic); // Simuler l'upload de la photo
+        showMainSection();
+    }
 }
 
-// Gérer la connexion de l'utilisateur
-function loginUser() {
-  let username = document.getElementById('login-username').value;
-  let password = document.getElementById('login-password').value;
+// Fonction pour afficher la page principale
+function showMainSection() {
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('main-section').style.display = 'flex';
 
-  // Logique simple pour la connexion (à personnaliser avec base de données)
-  if (username === "chatgpt" && password === "1234") { // Juste un exemple
-    isLoggedIn = true;
-    showUserProfile();
-    return false;
-  } else {
-    alert("Nom d'utilisateur ou mot de passe incorrect.");
-    return false;
-  }
+    if (userProfilePic) {
+        document.getElementById('profile-avatar').src = userProfilePic;
+    }
 }
 
-// Gérer l'inscription de l'utilisateur
-function registerUser() {
-  let username = document.getElementById('signup-username').value;
-  let password = document.getElementById('signup-password').value;
-  let profilePic = document.getElementById('signup-profile-pic').files[0];
-
-  if (profilePic) {
-    let reader = new FileReader();
-    reader.onload = function(e) {
-      userProfilePic = e.target.result;
-      // Simuler l'inscription réussie
-      isLoggedIn = true;
-      showUserProfile();
-    };
-    reader.readAsDataURL(profilePic);
-  }
-
-  return false; // Empêche l'envoi du formulaire par défaut
+// Fonction pour changer la photo de profil
+function changeProfilePic() {
+    // Code pour changer la photo (à ajouter)
 }
 
-// Afficher la photo de profil et autres informations une fois connecté
-function showUserProfile() {
-  document.getElementById('top-bar').style.display = "flex";
-  document.getElementById('profile-pic').src = userProfilePic;
-  document.getElementById('auth-container').style.display = "none"; // Cacher les formulaires
-  document.getElementById('map-container').style.display = "block"; // Afficher la carte
-}
-
-// Déconnexion
+// Fonction de déconnexion
 function logout() {
-  isLoggedIn = false;
-  document.getElementById('top-bar').style.display = "none";
-  document.getElementById('profile-pic').src = "default-profile.png";
-  document.getElementById('auth-container').style.display = "block"; // Afficher les formulaires
-  document.getElementById('map-container').style.display = "none"; // Masquer la carte
+    loggedIn = false;
+    userProfilePic = null;
+    document.getElementById('profile-avatar').src = 'default-avatar.png';
+    showLoginForm();
 }
 
-// Ouvrir ou fermer le menu latéral
+// Fonction pour afficher le formulaire de connexion
+function showLoginForm() {
+    document.getElementById('auth-title').textContent = 'Se connecter';
+    document.getElementById('login-form').style.display = 'block';
+    document.getElementById('signup-form').style.display = 'none';
+}
+
+// Fonction pour afficher le formulaire d'inscription
+function showSignupForm() {
+    document.getElementById('auth-title').textContent = 'S\'inscrire';
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('signup-form').style.display = 'block';
+}
+
+// Fonction pour afficher/masquer le menu
 function toggleMenu() {
-  document.getElementById('side-menu').classList.toggle('open');
+    const sidebar = document.getElementById('sidebar');
+    sidebar.style.left = sidebar.style.left === '0px' ? '-250px' : '0px';
 }
 
-// Ouvrir ou fermer le menu de profil
+// Fonction pour afficher/masquer le menu de profil
 function toggleProfileMenu() {
-  document.getElementById('profile-menu').classList.toggle('open');
-}
-
-// Fonction pour afficher la carte
-function openMap() {
-  alert("Carte est ouverte !");
+    const profileMenu = document.getElementById('profile-menu');
+    profileMenu.style.display = profileMenu.style.display === 'none' ? 'block' : 'none';
 }
