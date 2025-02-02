@@ -42,4 +42,32 @@
 </head>
 <body>
 
-    
+<div class="container">
+    <h2>Ajouter une photo de profil</h2>
+    <input type="file" id="profilePicUpload" />
+    <button onclick="saveProfilePic()">Enregistrer</button>
+</div>
+
+<script>
+    function saveProfilePic() {
+        const fileInput = document.getElementById('profilePicUpload');
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const profilePic = e.target.result;
+
+                const currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                currentUser.profilePic = profilePic;
+
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                alert("Photo de profil enregistrée !");
+                window.location.href = 'index.html';  // Rediriger vers la carte
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+</script>
+
+</body>
+</html>
