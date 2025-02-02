@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobTrack</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
 
@@ -40,21 +39,17 @@
 
         <div id="map"></div>
 
-        <div id="menu" class="sidebar">
+        <!-- Menu latéral -->
+        <div id="profile-menu" class="sidebar">
             <h3>Menu</h3>
             <button onclick="changeTheme()">Changer de Thème</button>
-            <button onclick="logout()">Se Déconnecter</button>
-        </div>
-
-        <div id="profile-menu" class="sidebar">
-            <h3>Profil</h3>
             <button onclick="changeProfilePic()">Modifier la photo</button>
             <button onclick="changePassword()">Changer de mot de passe</button>
             <button onclick="logout()">Se Déconnecter</button>
         </div>
+
     </div>
 
     <script src="app.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body>
 </html>
