@@ -1,5 +1,7 @@
 let currentUser = null;
 let currentTheme = "light";
+let userMarker = null;
+let userPosition = { lat: null, lon: null };
 
 // Afficher le formulaire d'inscription
 function showRegister() {
@@ -157,10 +159,27 @@ function showMap() {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            // Ajouter un fond gris à la carte
+            const grayLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                opacity: 0.5
+            }).addTo(map);
+
             // Ajouter un marqueur à la position actuelle
-            L.marker([lat, lon]).addTo(map)
+            userMarker = L.marker([lat, lon]).addTo(map)
                 .bindPopup("Vous êtes ici.")
                 .openPopup();
+
+            // Suivre la position de l'utilisateur
+            map.on('moveend', function () {
+                const currentBounds = map.getBounds();
+                grayLayer.setOpacity(0.5); // Assurer la carte reste grisée à l'extérieur du carré
+
+                if (userPosition.lat !== lat || userPosition.lon !== lon) {
+                    userPosition = { lat: lat, lon: lon };
+                    userMarker.setLatLng([lat, lon]).addTo(map);
+                }
+            });
         }, function (error) {
             alert("Impossible de récupérer votre position.");
         });
