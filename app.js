@@ -149,14 +149,60 @@ function showMap() {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            // Couverture grise par défaut
+            const mapCover = document.createElement("div");
+            mapCover.id = "map-cover";
+            document.getElementById("map").appendChild(mapCover);
+
             // Ajouter un marqueur à la position actuelle
             userMarker = L.marker([lat, lon]).addTo(map)
                 .bindPopup("Vous êtes ici.")
                 .openPopup();
+
+            // Fonction pour gérer l'exploration
+            function updateExploration() {
+                // Calculer la position du carré à explorer
+                const squareLat = Math.floor(lat / 50) * 50;
+                const squareLon = Math.floor(lon / 50) * 50;
+                const squareKey = `${squareLat},${squareLon}`;
+
+                if (!exploredSquares.has(squareKey)) {
+                    exploredSquares.add(squareKey);
+                    // Révéler le carré correspondant (enlever la couverture grise)
+                    const squareDiv = document.createElement("div");
+                    squareDiv.style.position = "absolute";
+                    squareDiv.style.top = `${(squareLat / 50) * 50}px`;
+                    squareDiv.style.left = `${(squareLon / 50) * 50}px`;
+                    squareDiv.style.width = "50px";
+                    squareDiv.style.height = "50px";
+                    squareDiv.style.backgroundColor = "transparent"; // Dégriser cette zone
+                    mapCover.appendChild(squareDiv);
+
+                    // Calculer le pourcentage d'exploration
+                    totalSquares++;
+                    explorationProgress = (exploredSquares.size / totalSquares) * 100;
+                    document.getElementById("progress-value").innerText = `${Math.round(explorationProgress)}%`;
+                }
+            }
+
+            // Mettre à jour l'exploration à chaque déplacement
+            map.on("moveend", function () {
+                const newLat = map.getCenter().lat;
+                const newLon = map.getCenter().lng;
+
+                if (newLat !== lat || newLon !== lon) {
+                    lat = newLat;
+                    lon = newLon;
+                    updateExploration();
+                }
+            });
+
+            updateExploration();
         }, function (error) {
             alert("Impossible de récupérer votre position.");
         });
     } else {
         alert("La géolocalisation n'est pas supportée par votre navigateur.");
     }
-}
+                }
+                                                 
