@@ -55,7 +55,7 @@ header {
 .sidebar {
     position: fixed;
     top: 0;
-    left: -250px; /* Menu caché par défaut */
+    left: -250px;
     width: 250px;
     height: 100%;
     background: var(--sidebar-color);
@@ -64,21 +64,10 @@ header {
     transition: left 0.3s ease;
 }
 
-/* Affichage du menu */
 .sidebar.active {
-    left: 0; /* Déplace le menu à gauche */
+    left: 0;
 }
 
-/* Option d'ombrage pour le fond lorsque le menu est ouvert */
-body {
-    transition: background-color 0.3s ease;
-}
-
-.sidebar.active ~ body {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Carte */
 #map {
     width: 100%;
     height: 80vh;
