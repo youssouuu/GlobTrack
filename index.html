@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobTrack</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Ajouter Leaflet.js pour la carte -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
 
@@ -41,10 +43,7 @@
 
         <div id="menu" class="sidebar">
             <h3>Menu</h3>
-            <button onclick="changeTheme('light')">Thème Clair</button>
-            <button onclick="changeTheme('dark')">Thème Sombre</button>
-            <button onclick="changeTheme('pastel')">Thème Pastel</button>
-            <button onclick="changeTheme('highContrast')">Contraste Élevé</button>
+            <button onclick="changeTheme()">Changer de Thème</button>
             <button onclick="logout()">Se Déconnecter</button>
         </div>
 
