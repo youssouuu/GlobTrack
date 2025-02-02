@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une photo de profil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="file"] {
+            margin-top: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Veuillez ajouter une photo de profil</h1>
+    <input type="file" id="uploadProfilePic" onchange="saveProfilePic()">
+    <button onclick="saveProfilePic()">Sauvegarder</button>
+</div>
+
+<script>
+    function saveProfilePic() {
+        const file = document.getElementById('uploadProfilePic').files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                currentUser.profilePic = e.target.result;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                window.location.href = 'index.html';  // Redirige vers la carte après avoir ajouté la photo
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+
+</body>
+</html>
