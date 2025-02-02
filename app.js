@@ -1,53 +1,73 @@
-// Basculer entre les formulaires de connexion et d'inscription
-function toggleForms() {
-    document.getElementById('login-form').classList.toggle('hidden');
-    document.getElementById('register-form').classList.toggle('hidden');
+let isLoggedIn = false; // Indique si l'utilisateur est connecté
+let userProfilePic = "default-profile.png"; // Image par défaut du profil
+
+// Afficher la page d'inscription
+function showSignup() {
+  document.getElementById('login-form').style.display = "none";
+  document.getElementById('signup-form').style.display = "block";
 }
 
-// Inscription d'un nouvel utilisateur
-function register() {
-    const username = document.getElementById('register-username').value;
-    const password = document.getElementById('register-password').value;
-
-    if (!username || !password) {
-        alert('Veuillez remplir tous les champs.');
-        return;
-    }
-
-    // Vérifie si l'utilisateur existe déjà
-    if (localStorage.getItem(username)) {
-        alert('Nom d\'utilisateur déjà pris.');
-        return;
-    }
-
-    // Stocker l'utilisateur dans le LocalStorage
-    localStorage.setItem(username, JSON.stringify({ password: password }));
-    alert('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
-
-    // Revenir au formulaire de connexion
-    toggleForms();
+// Afficher la page de connexion
+function showLogin() {
+  document.getElementById('login-form').style.display = "block";
+  document.getElementById('signup-form').style.display = "none";
 }
 
-// Connexion d'un utilisateur existant
-function login() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
+// Gérer la connexion de l'utilisateur
+function loginUser() {
+  let username = document.getElementById('login-username').value;
+  let password = document.getElementById('login-password').value;
 
-    const storedUser = JSON.parse(localStorage.getItem(username));
+  // Logique simple pour la connexion (à personnaliser avec base de données)
+  if (username === "chatgpt" && password === "1234") { // Juste un exemple
+    isLoggedIn = true;
+    showUserProfile();
+    return false;
+  } else {
+    alert("Nom d'utilisateur ou mot de passe incorrect.");
+    return false;
+  }
+}
 
-    if (!storedUser) {
-        alert('Nom d\'utilisateur introuvable.');
-        return;
-    }
+// Gérer l'inscription de l'utilisateur
+function registerUser() {
+  let username = document.getElementById('signup-username').value;
+  let password = document.getElementById('signup-password').value;
+  let profilePic = document.getElementById('signup-profile-pic').files[0];
 
-    if (storedUser.password !== password) {
-        alert('Mot de passe incorrect.');
-        return;
-    }
+  if (profilePic) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      userProfilePic = e.target.result;
+      // Simuler l'inscription réussie
+      isLoggedIn = true;
+      showUserProfile();
+    };
+    reader.readAsDataURL(profilePic);
+  }
 
-    alert('Connexion réussie !');
-    localStorage.setItem('currentUser', username); // Stocker l'utilisateur connecté
+  return false; // Empêche l'envoi du formulaire par défaut
+}
 
-    // Rediriger vers la carte
-    window.location.href = 'map.html';
+// Afficher la photo de profil et autres informations une fois connecté
+function showUserProfile() {
+  document.getElementById('top-bar').style.display = "flex";
+  document.getElementById('profile-pic').src = userProfilePic;
+}
+
+// Déconnexion
+function logout() {
+  isLoggedIn = false;
+  document.getElementById('top-bar').style.display = "none";
+  document.getElementById('profile-pic').src = "default-profile.png";
+}
+
+// Ouvrir ou fermer le menu latéral
+function toggleMenu() {
+  document.getElementById('side-menu').classList.toggle('open');
+}
+
+// Ouvrir ou fermer le menu de profil
+function toggleProfileMenu() {
+  document.getElementById('profile-menu').classList.toggle('open');
 }
