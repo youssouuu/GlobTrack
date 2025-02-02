@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlobTrack - Carte</title>
+    <title>GlobTrack</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css">
     <style>
         #map {
             height: 80vh;
@@ -43,10 +42,6 @@
             cursor: pointer;
         }
 
-        .exploration {
-            font-size: 18px;
-        }
-
         .logout-btn {
             display: none;
             margin-top: 10px;
@@ -55,24 +50,6 @@
             color: white;
             border: none;
             cursor: pointer;
-        }
-
-        .profile-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .upload-btn {
-            margin-top: 5px;
-            background-color: #3498db;
-            color: white;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .upload-btn:hover {
-            background-color: #2980b9;
         }
 
         .profile-actions {
@@ -100,14 +77,13 @@
     </style>
 </head>
 <body>
-    <!-- Top Bar -->
+    <!-- Barre en haut -->
     <div class="top-bar">
         <div class="left" id="menuToggle">☰</div>
         <div class="center" id="explorationPercentage">Exploration : 0%</div>
         <div class="right" id="profileSection">
             <div class="profile-container">
                 <img src="default-profile.png" id="profilePic" alt="Profile Picture" onclick="toggleProfileActions()">
-                <input type="file" id="uploadProfilePic" class="upload-btn" onchange="updateProfilePic()" style="display:none;">
             </div>
             <div class="profile-actions" id="profileActions">
                 <button onclick="logout()">Déconnexion</button>
@@ -115,9 +91,10 @@
         </div>
     </div>
 
-    <button class="logout-btn" id="logoutBtn" onclick="logout()">Déconnexion</button>
+    <!-- Carte -->
     <div id="map"></div>
 
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         let map, userPath = [], exploredAreas = [];
@@ -125,6 +102,7 @@
 
         // Vérifier si l'utilisateur est connecté
         if (!currentUser) {
+            alert("Veuillez vous connecter pour continuer !");
             window.location.href = 'login.html';  // Rediriger vers la page de connexion
         }
 
@@ -213,19 +191,6 @@
         function logout() {
             localStorage.removeItem('currentUser');
             window.location.href = 'login.html';
-        }
-
-        function updateProfilePic() {
-            const file = document.getElementById('uploadProfilePic').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profilePic').src = e.target.result;
-                    currentUser.profilePic = e.target.result;
-                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                };
-                reader.readAsDataURL(file);
-            }
         }
 
         initMap();
